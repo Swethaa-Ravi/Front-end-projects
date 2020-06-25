@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .square{
+            width: 30%;
+            height: 30%;
+            background-color: blueviolet;
+            float: left;
+            margin: 1.66%;
+            border-radius: 20%;
+            transition: background-color 0.5s;
+        }
+
+        #container{
+            height: 600px;
+            width: 600px;
+            margin: 20px auto;
+        }
+
+        #strip{
+            background-color: black;
+            color: white;
+            height: 30px;
+            text-align: center;
+        }
+
+        .selected{
+            background-color:steelblue;
+            border: none;
+        }
+
+        h1{
+            text-align: center;
+            line-height: 1.5;
+            font-weight: normal;
+            background-color: steelblue;
+            margin: 0px;
+            text-transform: uppercase;
+            padding: 20px;
+        }
+
+        body{
+            margin: 0px;
+            font-family:Georgia, 'Times New Roman', Times, serif ;
+        }
+
+        #colourdisplay{
+            font-size: 150%;
+        }
+
+        button{
+            border:0px;
+            background-color: black;
+            color: white;
+            text-transform: uppercase;
+            height: 100%;
+            font: weight 400;
+            font-size: inherit;
+            transition: all 0.5s;
+            outline: none;
+        }
+
+        button:hover{
+            background-color: steelblue;
+        }
+
+        #message{
+            display: inline-block;
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+    <h1>The great
+        <br>
+        <span id="colourdisplay">RGB</span>
+        <br>
+        Colour Game
+    </h1>
+    <div id="strip">
+        <button id="reset">New Colours</button>
+        <span id="message"></span>
+        <button id="easybtn">Easy</button>
+        <button id="hardbtn">Hard</button>
+    </div>
+    <div id="container">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+    </div>
+
+
+    <script>
+        var numsquares=6;
+        var colours= generaterandomcolours(numsquares);
+
+        var squares=document.querySelectorAll(".square");
+        var pickedcolour=pickcolour();
+        var colourdisplay=document.getElementById("colourdisplay");
+        var messagedisplay=document.getElementById("message");
+        var h1=document.querySelector("h1");
+        var resetbutton=document.getElementById("reset");
+        var easybtn=document.getElementById("easybtn");
+        var hardbtn=document.getElementById("hardbtn");
+
+        easybtn.addEventListener("click",function(){
+            easybtn.classList.add("selected");
+            hardbtn.classList.remove("selected");
+            numsquares=3;
+            colours=generaterandomcolours(numsquares);
+            pickedcolour=pickcolour();
+            colourdisplay.textContent=pickedcolour;
+            for(var i=0;i<squares.length;i++){
+                if(colours[i]){
+                    squares[i].style.backgroundColor=colours[i];
+                }
+                else{
+                    squares[i].style.display="none";
+                }
+            }
+        });
+        hardbtn.addEventListener("click",function(){
+            easybtn.classList.remove("selected");
+            hardbtn.classList.add("selected");
+            numsquares=6;
+            colours=generaterandomcolours(numsquares);
+            pickedcolour=pickcolour();
+            colourdisplay.textContent=pickedcolour;
+            for(var i=0;i<squares.length;i++){
+                    squares[i].style.backgroundColor=colours[i];
+                    squares[i].style.display="block";
+                }
+        });
+
+        resetbutton.addEventListener("click",function(){
+            //generate all new colours
+            colours=generaterandomcolours(numsquares);
+            //pick a new random colour from array
+            pickedcolour=pickcolour();
+            //change colour display to match picked colour
+            colourdisplay.textContent=pickedcolour;
+            //change colours of squares
+            for(var i=0;i<squares.length;i++){
+                squares[i].style.backgroundColor=colours[i];
+            }
+            h1.style.backgroundColor="steelblue";
+            messagedisplay.textContent="";
+            this.textContent="new colours";
+        });
+
+        colourdisplay.textContent=pickedcolour;
+
+        for(var i=0;i<squares.length;i++){
+            //adding initial colours
+            squares[i].style.backgroundColor=colours[i];
+
+            //adding click listeners
+            squares[i].addEventListener("click",function(){
+                //grab colour of clicked square
+                var clickedcolour=this.style.backgroundColor;
+                //comparing with pickedcolour
+                if(clickedcolour==pickedcolour){
+                    changecolours(clickedcolour);
+                    messagedisplay.textContent="Correct!";
+                    h1.style.backgroundColor=clickedcolour;
+                    resetbutton.textContent="Play Again";
+                }
+                else{
+                    this.style.backgroundColor="white";
+                    messagedisplay.textContent="Try Again!";
+                }
+
+            });
+
+        }     
+        function changecolours(colour){
+            //loop through all squares
+            for(var i=0;i<squares.length;i++){
+                //change each colour to match given colour
+                squares[i].style.backgroundColor=colour;
+            }
+            
+        }  
+        function pickcolour(){
+            var random=Math.floor(Math.random()*colours.length);
+            return colours[random];
+        }
+        function generaterandomcolours(num){
+            //make an array
+            var arr=[];
+            //repeat n times
+            for(var i=0;i<num;i++){
+                //get random colour and push into array
+                arr.push(randomcolour());
+            }
+            //return that array
+            return arr;
+        }   
+        function randomcolour(){
+            //pick a red from 0-255
+            var r=Math.floor(Math.random()*256);
+            //pick a green from 0-255
+            var g=Math.floor(Math.random()*256);
+            //pick a blue from 0-255
+            var b=Math.floor(Math.random()*256);
+            return "rgb(" + r + ", " + g + ", " + b + ")";
+
+        }     
+    </script>
+    
+</body>
+</html>
