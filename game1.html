@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>slider game</title>
+    <style>
+        #upperbar{
+            display: inline-block;
+            height: 100px;
+            width: 200px;
+            background-color: chocolate;
+            position: absolute;
+        }
+        #playscreen{
+            display: inline-block;
+            height: 700px;
+            width: 1200px;
+            margin: 20px;
+            margin-top: 0px;
+            background-color: blue;
+            position: relative;
+        }
+        #slidespace{
+            display: inline-block;
+            height: 100px;
+            width: 1200px;
+            background-color: chocolate;
+            position: absolute;
+            bottom: 0px;
+        }
+        #slider{
+            display: inline-block;
+            height: 90px;
+            width: 200px;
+            background-color: pink;
+            border-radius: 40%;
+            position: absolute;
+        }
+        #playball{
+            display: inline-block;
+            height: 70px;
+            width: 70px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+        #details{
+            display: inline-block;
+            vertical-align: top;
+            margin: 60px;
+            top: 90px;
+            left: 12;
+            font-size: 23px;
+        }
+        #display1{
+            top: 100px;
+            left: 400px;
+            position: absolute;
+            opacity: 0;
+        }
+        #display2{
+            top: 100px;
+            left: 500px;
+            position: absolute;
+            opacity: 0;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body id="body1" onload="ready(), toset()">
+    <div id="playscreen">
+        <div id="slidespace">
+            <div id="slider">
+
+            </div>
+        </div>
+
+        <div id="playball">
+
+        </div>
+        <div id="upperbar">
+        </div>
+        <div id="display1" style="font-size: 20px;">
+            <p>GAME OVER!!<br>CONGRATULATIONS YOU HAVE REACHED HIGH SCORE OF 6 POINTS</p>
+        </div>
+        <div id="display2" style="font-size: 20px;">
+            <p>GAME OVER!!<br>YOUR TIME IS UP!!<br>BETTER LUCK NEXT TIME</p>
+        </div>
+    </div>
+    <div id="details">
+        <p>Your score is <span id="score">0</span></p>
+        <p>Level: <span id="level">1</span></p>
+        <p>Timer: <span id="Tim"></span></p>
+        <button id="resetbutton">Reset</button>
+    </div>
+   
+
+
+    <script>
+        var a=document.getElementById("slider");
+        var b=document.getElementById("slidespace");
+        var c=document.getElementById("playball");
+        var d=document.getElementById("upperbar");
+        var e=document.getElementById("playscreen");
+        var f=document.getElementById("score");
+        var g=document.getElementById("level");
+        var h=document.getElementById("Tim");
+        var i=document.getElementById("display1");
+        var k=document.getElementById("display2");
+        var l=document.getElementById("details");
+        var m=document.getElementById("resetbutton");
+        var changingtime=70;
+        var countscore=0;
+        var countlevel=1;
+        var posx,posxnew;
+        a.onmouseover=function(){whenmouseover()};
+        a.onclick=function(){whenmouseclick()};
+        var timer1,rightflag;
+        var timer,timer2,timer3,timer4;
+        var width=d.offsetWidth;
+        var cheight=c.offsetHeight;
+        var cwidth=c.offsetWidth;
+
+         function whenmouseover(){
+            b.onmousemove=function(){whenmousemove()};
+            posx = event.clientX;
+        }
+
+        function whenmousemove(){
+            posxnew= posx-event.clientX;
+            if((a.offsetLeft-posxnew)>b.offsetLeft && (a.offsetLeft-posxnew)<(b.offsetLeft+1000)){
+            a.style.left=(a.offsetLeft-posxnew)+"px";
+            c.style.left=(a.offsetLeft-posxnew+60)+"px";
+            }
+            posx=event.clientX;        
+        }
+
+        function whenmouseclick(){
+            var timer=setInterval(moveballup,10);
+            function moveballup(){
+                if (c.offsetTop!=0){
+                c.style.top=(c.offsetTop-10)+"px";
+                    if(c.offsetTop==100){
+                        if(((c.offsetLeft+c.offsetWidth)>d.offsetLeft) && (c.offsetLeft<(d.offsetLeft+d.offsetWidth))){
+                           countlevel++;
+                           g.innerHTML=countlevel;
+                           countscore++;
+                           f.innerHTML=countscore;
+                           clearInterval(timer1);
+                           d.style.left="0px";
+                           d.style.opacity=0;
+                           setTimeout(ready,500);
+                            
+                        }
+                    }
+                }
+                else{
+                     clearInterval(timer);
+                     c.style.top=(e.offsetHeight-100-c.offsetHeight)+"px";
+                     c.style.left=(a.offsetLeft+60)+"px";
+                }
+            }
+        }
+        
+        function ready(){
+            changingtime=changingtime-10;
+            var width=d.offsetWidth;
+            var cheight=c.offsetHeight;
+            var cwidth=c.offsetWidth;
+            timer1=setInterval(upperslide,changingtime);
+            var rightflag=1;
+            function upperslide(){
+                d.style.opacity=1;
+                if(rightflag==1){
+                    if(d.offsetLeft<1000){
+                       d.style.left=(d.offsetLeft+10)+"px";
+                       console.log(d.style.left);
+                    }else{
+                        rightflag=0;
+                    }
+                }else if(rightflag==0){
+                    if(d.offsetLeft>=0 && d.offsetLeft<=1000){
+                       d.style.left=(d.offsetLeft-10)+"px";
+                    }else{
+                        rightflag=1;
+                    }
+                }else{
+                    console.log("yo");
+                    clearInterval(timer1);
+                    d.style.left=0+"px";
+                }         
+            }
+            if(countlevel<7){
+            d.style.width=(width-20)+"px";
+            c.style.height=(cheight-10)+"px";
+            c.style.width=(cwidth-10)+"px";
+            c.style.top=(e.offsetHeight-100-c.offsetHeight)+"px";
+            }
+            
+        }
+
+        function toset(){
+            c.style.left="65px";
+            c.style.top="540px";
+            var timer2=setInterval(playfor,1000);
+            j=30;
+            function playfor(){
+                if(j>-1){
+                    h.innerHTML=j;
+                    j--;
+                }
+                else if(j==-2){
+                    clearInterval(timer2);
+                }
+                else{
+                    k.style.opacity=1;
+                    l.style.opacity=0.5;
+                    var timer3=setInterval(popup2,100);
+                    var initialfont=20;
+                    function popup2(){
+                       if(initialfont<=80){
+                           k.style.fontSize=(initialfont+"px");
+                           initialfont=initialfont+10;
+                       }
+                       else{
+                           clearInterval(timer2);
+                           a.mouseover=null;
+                           a.onclick=null;
+                           b.onmousemove=null;
+                           d.style.display="none";
+                       }
+                    }
+                }
+            }
+        }
+
+        function moving(){
+           // console.log("mad shreya");
+            i.style.opacity="1";
+            l.style.opacity="0.5";
+            var timer4=setInterval(popup3,100);
+            var initialfont1=20;
+            function popup3(){
+                if(initialfont1<80){
+                    i.style.fontSize=(initialfont1+"px");
+                    //console.log(initialfont1);
+                    initialfont1=initialfont1+10;
+                    console.log(initialfont1);
+                }
+                else{
+                    j=-2;
+                    a.mouseover=null;
+                    a.onclick=null;
+                    b.onmousemove=null;
+                    changingtime=0;
+                    rightflag=2;
+                    d.style.left=0;
+                    k.style.opacity=0;
+                    clearInterval(timer4);
+                    d.style.display="none";
+                }
+            }
+        }
+
+        m.addEventListener("click", function(){
+            countlevel=1;
+            g.innerHTML=countlevel;
+            countscore=0;
+            f.innerHTML=countscore;
+            j=30;
+            d.style.width=width+"px";
+            c.style.height=cheight+"px";
+            c.style.width=cwidth+"px";
+            c.style.top=(e.offsetHeight-100-c.offsetHeight)+"px";
+            ready();
+            changingtime=70;
+        });
+       
+    </script>
+</body>
+</html>
